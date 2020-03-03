@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <PackageId>SwiftMQ.DependencyInjection</PackageId>
+    </PropertyGroup>
+    <Import Project="../../package.props" />
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SwiftMQ\SwiftMQ.csproj" />
+    </ItemGroup>
+</Project>

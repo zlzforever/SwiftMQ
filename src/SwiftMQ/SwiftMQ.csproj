@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <PackageId>SwiftMQ</PackageId>
+    </PropertyGroup>
+    <Import Project="../../package.props" />
+    <ItemGroup>
+        <PackageReference Include="System.Threading.Channels" Version="4.7.0" />
+    </ItemGroup>
+</Project>

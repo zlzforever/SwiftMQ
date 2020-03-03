@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftMQ", "src\SwiftMQ\SwiftMQ.csproj", "{4BADA497-9BB2-457F-9EFF-3D217EA8447C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C3B1B01-98DA-47E9-925C-52785B35493A}"
+ProjectSection(SolutionItems) = preProject
+	LICENSE = LICENSE
+	.editorconfig = .editorconfig
+				.gitignore = .gitignore
+				package.props = package.props
+				publish.sh = publish.sh
+				readme.md = readme.md
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftMQ.DependencyInjection", "src\SwiftMQ.DependencyInjection\SwiftMQ.DependencyInjection.csproj", "{88C8B3A0-ADA6-4566-B461-013443CCF4D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BADA497-9BB2-457F-9EFF-3D217EA8447C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BADA497-9BB2-457F-9EFF-3D217EA8447C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BADA497-9BB2-457F-9EFF-3D217EA8447C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BADA497-9BB2-457F-9EFF-3D217EA8447C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88C8B3A0-ADA6-4566-B461-013443CCF4D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88C8B3A0-ADA6-4566-B461-013443CCF4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88C8B3A0-ADA6-4566-B461-013443CCF4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88C8B3A0-ADA6-4566-B461-013443CCF4D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
