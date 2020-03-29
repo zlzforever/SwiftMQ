@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
@@ -10,18 +11,69 @@ namespace SwiftMQ
         private readonly ConcurrentDictionary<string, Channel<dynamic>> _channelDict =
             new ConcurrentDictionary<string, Channel<dynamic>>();
 
-        private MessageQueue()
+        private long _publishCounter;
+        private long _consumeCounter;
+
+        public long PublishedCount => Interlocked.Read(ref _publishCounter);
+
+        public long ConsumedCount => Interlocked.Read(ref _consumeCounter);
+
+        public async Task PublishAsync<TMessage>(string queue, TMessage message)
         {
+            Interlocked.Increment(ref _publishCounter);
+            if (!DeclareQueue(queue))
+            {
+                throw new ApplicationException("Declare queue failed");
+            }
+
+            await _channelDict[queue].Writer.WriteAsync(message);
         }
 
-        private static readonly Lazy<MessageQueue> MyInstance = new Lazy<MessageQueue>(() => new MessageQueue());
+        public async Task ConsumeAsync<TMessage>(AsyncMessageConsumer<TMessage> consumer,
+            CancellationToken cancellationToken)
+        {
+            if (consumer.Registered)
+            {
+                throw new ApplicationException("This consumer is already registered");
+            }
 
-        /// <summary>
-        /// 单例对象
-        /// </summary>
-        public static IMessageQueue Instance => MyInstance.Value;
+            Interlocked.Increment(ref _consumeCounter);
+            if (!DeclareQueue(consumer.Queue))
+            {
+                throw new ApplicationException("Declare queue failed");
+            }
 
-        public bool QueueDeclare(string queue)
+            var channel = _channelDict[consumer.Queue];
+            consumer.Register();
+
+            await Task.Factory.StartNew(async () =>
+            {
+                while (await channel.Reader.WaitToReadAsync(cancellationToken))
+                {
+                    if (await channel.Reader.ReadAsync(cancellationToken) is TMessage message)
+                    {
+                        await consumer.InvokeAsync(message);
+                    }
+                }
+            }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+
+        public void CompleteQueue(string queue)
+        {
+            if (_channelDict.TryGetValue(queue, out var channel))
+            {
+                try
+                {
+                    channel.Writer.Complete();
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+        }
+
+        private bool DeclareQueue(string queue)
         {
             if (!_channelDict.ContainsKey(queue))
             {
@@ -30,53 +82,6 @@ namespace SwiftMQ
             }
 
             return true;
-        }
-
-        public async Task PublishAsync<TMessage>(string queue, TMessage message)
-        {
-            if (_channelDict.TryGetValue(queue, out var channel))
-            {
-                await channel.Writer.WriteAsync(message);
-            }
-            else
-            {
-                throw new ApplicationException("Use SwiftMQ.QueueDeclare to create a queue firstly");
-            }
-        }
-
-        public Task ConsumeAsync<TMessage>(AsyncMessageConsumer<TMessage> consumer)
-        {
-            if (consumer.Registered)
-            {
-                throw new ApplicationException("This consumer is already registered");
-            }
-
-            if (_channelDict.TryGetValue(consumer.Queue, out var channel))
-            {
-                consumer.Register();
-                return Task.Factory.StartNew(async () =>
-                {
-                    while (await channel.Reader.WaitToReadAsync())
-                    {
-                        if (await channel.Reader.ReadAsync() is TMessage message)
-                        {
-                            await consumer.InvokeAsync(message);
-                        }
-                    }
-                });
-            }
-            else
-            {
-                throw new ApplicationException("Use SwiftMQ.QueueDeclare to create a queue firstly");
-            }
-        }
-
-        public void CloseQueue(string queue)
-        {
-            if (_channelDict.TryGetValue(queue, out var channel))
-            {
-                channel.Writer.Complete();
-            }
         }
     }
 }

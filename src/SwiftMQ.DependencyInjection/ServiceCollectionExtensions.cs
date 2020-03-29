@@ -7,7 +7,7 @@ namespace SwiftMQ.DependencyInjection
 	{
 		public static IServiceCollection AddSwiftMQ(this IServiceCollection serviceCollection)
 		{
-			serviceCollection.AddSingleton(provider => MessageQueue.Instance);
+			serviceCollection.AddSingleton<IMessageQueue, MessageQueue>();
 			return serviceCollection;
 		}
 	}
