@@ -18,6 +18,8 @@ namespace SwiftMQ
 
 		public event AsyncMessageHandler<TMessage> Received;
 
+		public event Action OnClosing;
+
 		public AsyncMessageConsumer(string queue)
 		{
 			if (string.IsNullOrWhiteSpace(queue))
@@ -40,7 +42,12 @@ namespace SwiftMQ
 				throw new ArgumentException("Received delegate is null");
 			}
 
-			await Received.Invoke(message);
+			await Received(message);
+		}
+
+		public virtual void Close()
+		{
+			OnClosing?.Invoke();
 		}
 	}
 }

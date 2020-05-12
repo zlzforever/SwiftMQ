@@ -18,7 +18,7 @@ namespace SwiftMQ
 
 		public long ConsumedCount => Interlocked.Read(ref _consumeCounter);
 
-		public async Task PublishAsync<TMessage>(string queue, TMessage message) where TMessage : class
+		public async Task PublishAsync<TMessage>(string queue, TMessage message)
 		{
 			Interlocked.Increment(ref _publishCounter);
 			if (!DeclareQueue(queue))
@@ -30,7 +30,7 @@ namespace SwiftMQ
 		}
 
 		public async Task ConsumeAsync<TMessage>(AsyncMessageConsumer<TMessage> consumer,
-			CancellationToken cancellationToken) where TMessage : class
+			CancellationToken cancellationToken)
 		{
 			if (consumer.Registered)
 			{
