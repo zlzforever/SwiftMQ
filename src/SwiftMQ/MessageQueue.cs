@@ -58,7 +58,7 @@ namespace SwiftMQ
 			}, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 		}
 
-		public void CompleteQueue(string queue)
+		public void CloseQueue(string queue)
 		{
 			if (_channelDict.TryGetValue(queue, out var channel))
 			{

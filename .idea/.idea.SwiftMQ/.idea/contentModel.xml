@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="$PROJECT_DIR$" t="IncludeFlat">
+    <e p="C:\Users\User\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\User\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_SwiftMQ.-134439701.00" t="ExcludeRecursive" />
+    <e p="C:\Users\User\github\SwiftMQ" t="IncludeFlat">
       <e p=".editorconfig" t="Include" />
       <e p=".gitignore" t="Include" />
       <e p="LICENSE" t="Include" />
@@ -10,7 +12,7 @@
       <e p="publish.sh" t="Include" />
       <e p="readme.md" t="Include" />
       <e p="Solution Items" t="Include" />
-      <e p="src/SwiftMQ" t="IncludeRecursive">
+      <e p="src\SwiftMQ" t="IncludeRecursive">
         <e p="AsyncMessageConsumer.cs" t="Include" />
         <e p="AsyncMessageHandler.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
@@ -25,7 +27,7 @@
         </e>
         <e p="SwiftMQ.csproj" t="IncludeRecursive" />
       </e>
-      <e p="src/SwiftMQ.DependencyInjection" t="IncludeRecursive">
+      <e p="src\SwiftMQ.DependencyInjection" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -39,7 +41,5 @@
       </e>
       <e p="SwiftMQ.sln" t="IncludeFlat" />
     </e>
-    <e p="$USER_HOME$/Library/Caches/Rider2019.3/extResources" t="IncludeRecursive" />
-    <e p="$USER_HOME$/Library/Caches/Rider2019.3/resharper-host/local/Transient/ReSharperHost/v193/SolutionCaches/_SwiftMQ.1528935876.00" t="ExcludeRecursive" />
   </component>
 </project>

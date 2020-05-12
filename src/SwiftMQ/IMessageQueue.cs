@@ -9,5 +9,7 @@ namespace SwiftMQ
 
 		Task ConsumeAsync<TMessage>(AsyncMessageConsumer<TMessage> consumer, CancellationToken cancellationToken)
 			where TMessage : class;
+
+		void CloseQueue(string queue);
 	}
 }
