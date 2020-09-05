@@ -42,7 +42,7 @@ namespace SwiftMQ
 				throw new ArgumentException("Received delegate is null");
 			}
 
-			await Received.Invoke(message);
+			await Received(message);
 		}
 
 		public virtual void Close()
