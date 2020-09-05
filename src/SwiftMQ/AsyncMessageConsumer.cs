@@ -18,6 +18,8 @@ namespace SwiftMQ
 
 		public event AsyncMessageHandler<TMessage> Received;
 
+		public event Action<AsyncMessageConsumer<TMessage>> OnClosing;
+
 		public AsyncMessageConsumer(string queue)
 		{
 			if (string.IsNullOrWhiteSpace(queue))
@@ -41,6 +43,11 @@ namespace SwiftMQ
 			}
 
 			await Received.Invoke(message);
+		}
+
+		public virtual void Close()
+		{
+			OnClosing?.Invoke(this);
 		}
 	}
 }

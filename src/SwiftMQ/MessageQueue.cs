@@ -11,16 +11,8 @@ namespace SwiftMQ
 		private readonly ConcurrentDictionary<string, Channel<dynamic>> _channelDict =
 			new ConcurrentDictionary<string, Channel<dynamic>>();
 
-		private long _publishCounter;
-		private long _consumeCounter;
-
-		public long PublishedCount => Interlocked.Read(ref _publishCounter);
-
-		public long ConsumedCount => Interlocked.Read(ref _consumeCounter);
-
-		public async Task PublishAsync<TMessage>(string queue, TMessage message) where TMessage : class
+		public async Task PublishAsync<TMessage>(string queue, TMessage message)
 		{
-			Interlocked.Increment(ref _publishCounter);
 			if (!DeclareQueue(queue))
 			{
 				throw new ApplicationException("Declare queue failed");
@@ -30,14 +22,13 @@ namespace SwiftMQ
 		}
 
 		public async Task ConsumeAsync<TMessage>(AsyncMessageConsumer<TMessage> consumer,
-			CancellationToken cancellationToken) where TMessage : class
+			CancellationToken cancellationToken)
 		{
 			if (consumer.Registered)
 			{
 				throw new ApplicationException("This consumer is already registered");
 			}
 
-			Interlocked.Increment(ref _consumeCounter);
 			if (!DeclareQueue(consumer.Queue))
 			{
 				throw new ApplicationException("Declare queue failed");
@@ -45,6 +36,7 @@ namespace SwiftMQ
 
 			var channel = _channelDict[consumer.Queue];
 			consumer.Register();
+			consumer.OnClosing += x => { CompleteQueue(x.Queue); };
 
 			await Task.Factory.StartNew(async () =>
 			{
@@ -52,13 +44,14 @@ namespace SwiftMQ
 				{
 					if (await channel.Reader.ReadAsync(cancellationToken) is TMessage message)
 					{
-						await consumer.InvokeAsync(message);
+						Task.Factory.StartNew(async () => { await consumer.InvokeAsync(message); }, cancellationToken)
+							.ConfigureAwait(false).GetAwaiter();
 					}
 				}
 			}, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 		}
 
-		public void CompleteQueue(string queue)
+		private void CompleteQueue(string queue)
 		{
 			if (_channelDict.TryGetValue(queue, out var channel))
 			{
